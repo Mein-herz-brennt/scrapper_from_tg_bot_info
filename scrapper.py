@@ -2,6 +2,14 @@ import json
 import logging
 
 
+def not_in(information: str) -> bool:
+    inf = reader("result.json")
+    for i in inf:
+        if i["#"] == information:
+            return True
+    return False
+
+
 def reader(filename: str) -> list:
     """read and return list from json file"""
     with open(filename, "r", encoding="utf-8") as file:
@@ -40,13 +48,12 @@ def scrap(txt: str, min: int, percent: float, max: int) -> bool:
                                    "bank": info_about_price[i][4],
                                    "user": info_about_user[i][0],
                                    "link": "/deal" + info_about_price[i][0]})
-        print(all_in_one)
-        add_in_json("result.json", all_in_one)
+        # print(all_in_one)
+        add_in_json("result.json", list(all_in_one))
         return True
     except Exception as e:
         logging.warning(e)
         return False
-
 
 # print(txt)
 # print("---" * 30)

@@ -5,10 +5,10 @@ import tgcrypto
 from time import sleep
 import json
 from config import *
-import schedule
+import aioschedule as schedule
 from scrapper import *
 
-app = Client("Влад", api_hash=api_hash_v, api_id=api_id_v)
+app = Client("me", api_hash=api_hash_v, api_id=api_id_v)
 
 chat_id1 = ""
 
@@ -34,10 +34,20 @@ async def scrap_command(_, message: types.Message):
 @app.on_message(filters.bot)
 async def on_first_order_book_message(_, message: types.Message):
     text = str(message.text)
-    print(text)
-    print(scrap(text, 10, -1, 10000))
+    # print(text)
+    scrap(text, 10, -1, 10000)
     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id = chat_id.id
+    if not check_json():
+        i = reader("head_db.json")[-1]
+        msg = f"""Order: {i["#"]}\n
+                  Prise: {i["min"]} | {i["max"]}\n
+                  Percents: {i["percent"]}%\n
+                  User: {i["user"]}\n
+                  Bank: {i["bank"]}\n
+                  Link: {i["link"]}\n
+                  Card: <code>{i["card"]}</code>"""
+        await app.send_message(filters.me, msg)
     # await message.click("Refresh")
     await app.send_message(chat_id, "🔎 Orderbook")
     sleep(3)
@@ -52,8 +62,8 @@ async def on_first_order_book_message(_, message: types.Message):
 @app.on_edited_message(filters.bot)
 async def edited(_, message: types.Message):
     text = str(message.text)
-    print(text)
-    print(scrap(text, 10, -1, 1000))
+    # print(text)
+    scrap(text, 10, -1, 1000)
     await asyncio.sleep(2)
     await message.click("Refresh")
     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
@@ -93,39 +103,51 @@ async def edited(_, message: types.Message):
 
 
 #
+#
+# @app.on_message(filters.command("type", prefixes=".") & filters.me)
+# async def eho(_, msg):
+#     orig_text = msg.text.split(".type ", maxsplit=1)[1]
+#     text = orig_text
+#     tbp = ""  # to be printed
+#     typing_symbol = "|"
+#
+#     while tbp != orig_text:
+#         try:
+#             await msg.edit(tbp + typing_symbol)
+#             sleep(0.05)  # 50 ms
+#
+#             tbp = tbp + text[0]
+#             text = text[1:]
+#
+#             await msg.edit(tbp)
+#             sleep(0.05)
+#
+#         except FloodWait as e:
+#             sleep(e.value)
+#
+#
+# @app.on_message(filters.command("spam", prefixes=".") & filters.me)
+# async def spam(_, msg):
+#     orig_text = msg.text.split(".spam ", maxsplit=1)[1]
+#     text = orig_text
+#     await msg.delete()
+#     try:
+#         for i in range(12):
+#             await msg.reply(text)
+#     except FloodWait as e:
+#         sleep(e.value)
 
-@app.on_message(filters.command("type", prefixes=".") & filters.me)
-async def eho(_, msg):
-    orig_text = msg.text.split(".type ", maxsplit=1)[1]
-    text = orig_text
-    tbp = ""  # to be printed
-    typing_symbol = "|"
 
-    while tbp != orig_text:
-        try:
-            await msg.edit(tbp + typing_symbol)
-            sleep(0.05)  # 50 ms
-
-            tbp = tbp + text[0]
-            text = text[1:]
-
-            await msg.edit(tbp)
-            sleep(0.05)
-
-        except FloodWait as e:
-            sleep(e.value)
-
-
-@app.on_message(filters.command("spam", prefixes=".") & filters.me)
-async def spam(_, msg):
-    orig_text = msg.text.split(".spam ", maxsplit=1)[1]
-    text = orig_text
-    await msg.delete()
-    try:
-        for i in range(12):
-            await msg.reply(text)
-    except FloodWait as e:
-        sleep(e.value)
+@app.on_message(filters.command("payed", prefixes=".") & filters.me)
+async def payed(_, message: types.Message):
+    info = reader("head_db.json")[-1]
+    info["payed"] = True
+    add_in_json("head_db.json", [info])
+    await message.reply("Ok")
+    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
+    chat_id = chat_id.id
+    await app.send_message(chat_id, "🔎 Orderbook")
+    sleep(1.5)
 
 
 if __name__ == '__main__':

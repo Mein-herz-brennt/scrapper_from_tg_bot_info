@@ -3,6 +3,7 @@ import logging
 
 
 def checker() -> bool:
+    """check new updates in .json file"""
     try:
         info = reader("result.json")
         info1 = reader("last_result.json")
@@ -15,3 +16,5 @@ def checker() -> bool:
             return True
     except Exception as e:
         logging.warning(str(e) + " -- warning in file helper_checker was returned exception --")
+
+

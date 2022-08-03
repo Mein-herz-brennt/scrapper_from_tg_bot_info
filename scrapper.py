@@ -55,6 +55,17 @@ def scrap(txt: str, min: int, percent: float, max: int) -> bool:
         logging.warning(e)
         return False
 
+
+def check_json() -> bool:
+    try:
+        get_info = reader("head_db.json")
+        if not get_info[-1]["payed"]:
+            return False
+        else:
+            return True
+    except Exception as e:
+        logging.warning(str(e) + "-- warning in check_json --")
+
 # print(txt)
 # print("---" * 30)
 # print(info_about_price)

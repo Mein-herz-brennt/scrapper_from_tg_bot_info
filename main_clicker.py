@@ -13,9 +13,9 @@ app = Client("me", api_hash=api_hash_v, api_id=api_id_v)
 chat_id1 = ""
 
 
-def job(_, message: types.Message):
-    message.click("Refresh")
-    print(1)
+# def job(_, message: types.Message):
+#     message.click("Refresh")
+#     print(1)
 
 
 #
@@ -35,10 +35,12 @@ async def scrap_command(_, message: types.Message):
 async def on_first_order_book_message(_, message: types.Message):
     text = str(message.text)
     # print(text)
-    scrap(text, 10, -1, 10000)
+    scrap(text, 10, 0.5, 10000)
     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id = chat_id.id
-    if not check_json():
+    with open("out_json.txt", "r", encoding="utf-8") as file:
+        text = file.read()
+    if text == "True":
         i = reader("head_db.json")[-1]
         msg = f"""Order: {i["#"]}\n
                   Prise: {i["min"]} | {i["max"]}\n
@@ -49,7 +51,7 @@ async def on_first_order_book_message(_, message: types.Message):
                   Card: <code>{i["card"]}</code>"""
         await app.send_message(filters.me, msg)
     # await message.click("Refresh")
-    await app.send_message(chat_id, "🔎 Orderbook")
+    await app.send_message(789402487, "🔎 Orderbook")
     sleep(3)
 
     # schedule.every().second.do(await message.click("Refresh"))
@@ -63,7 +65,7 @@ async def on_first_order_book_message(_, message: types.Message):
 async def edited(_, message: types.Message):
     text = str(message.text)
     # print(text)
-    scrap(text, 10, -1, 1000)
+    scrap(text, 10, 0.5, 1000)
     await asyncio.sleep(2)
     await message.click("Refresh")
     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")

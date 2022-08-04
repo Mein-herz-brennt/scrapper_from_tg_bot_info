@@ -19,13 +19,13 @@ def reader(filename: str) -> list:
 
 def add_in_json(filename: str, data: list) -> bool:
     """add list of data in json file"""
-    try:
-        with open(filename, "w", encoding="utf-8") as file:
-            json.dump(data, file, indent=3)
-        return True
-    except Exception as e:
-        logging.warning(e)
-        return False
+    # try:
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=3)
+    return True
+    # except Exception as e:
+    #     logging.warning(e)
+    #     return False
 
 
 def scrap(txt: str, min: int, percent: float, max: int) -> bool:
@@ -56,16 +56,17 @@ def scrap(txt: str, min: int, percent: float, max: int) -> bool:
         return False
 
 
-def check_json() -> bool:
+def check_json() -> None:
     try:
         get_info = reader("head_db.json")
         if not get_info[-1]["payed"]:
-            return False
+            with open("out_json.txt", "w", encoding="utf-8") as file:
+                file.write("False")
         else:
-            return True
+            with open("out_json.txt", "w", encoding="utf-8") as file:
+                file.write("True")
     except Exception as e:
         logging.warning(str(e) + "-- warning in check_json --")
-
 # print(txt)
 # print("---" * 30)
 # print(info_about_price)

@@ -8,22 +8,29 @@ from helper_checker import *
 from scrapper import reader
 
 deal_link = ""
-# TODO
+
 app = Client("my_friend", api_id=api_id_b, api_hash=api_hash_b)
 
+# def checked():
+#     if checker():
+#         return True
+#     else:
+#         return False
 
-def checked():
-    if checker():
-        return True
-    else:
-        return False
+# TODO
 
 
-# if schedule.every().second.do(checker()):
-#     chat_id = types.Chat = app.get_chat("Kuna Code Bot")
-#     deal = reader("last_result.json")[-1]["link"]
-#     deal_link = deal
-#     await app.send_message(chat_id.id, deal)
+with app:
+    with open("out_checker.txt", "r", encoding="utf-8") as file:
+        text = file.read()
+    if text == "True":
+        chat_id = types.Chat = app.get_chat("Kuna Code Bot")
+        deal = reader("last_results.json")[-1]["link"]
+        deal_link = deal
+        app.send_message(chat_id.id, deal)
+
+
+
 
 #
 @app.on_message(filters.bot)
@@ -36,7 +43,7 @@ async def get_info_about_deal(_, message: types.Message):
     elif message.text.startswith("We`re in a deal creation."):
         pass
     elif len(message.text) == 16:
-        info = reader("last_result.json")
+        info = reader("last_results.json")
         info1 = reader("result.json")
         if info[-1]["link"] == deal_link:
             # msg = f"""Order: {info[-1]["#"]}\n
@@ -61,10 +68,14 @@ async def get_info_about_deal(_, message: types.Message):
                     i["card"] = message.text
                     i["payed"] = False
                     add_in_json("head_db.json", [i])
-        if await schedule.every().second.do(reader("head_db.json")[-1]["payed"]):
+        with open("out_json.txt", "r", encoding="utf-8") as file:
+            text = file.read()
+        if text == "True":
             await message.click("🤝 I have paid")
     else:
         await message.forward(filters.me)
+    while True:
+        await schedule.run_pending()
         # await app.send_message(789402487, msg)
 
 
@@ -85,5 +96,5 @@ async def get_info_about_deal(_, message: types.Message):
 
 if __name__ == '__main__':
     app.run()
-    while True:
-        await schedule.run_pending()
+
+

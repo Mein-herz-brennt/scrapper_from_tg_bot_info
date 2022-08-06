@@ -2,22 +2,22 @@ from scrapper import *
 import logging
 
 
-def checker() -> None:
+def checker() -> bool:
     """check new updates in .json file"""
+    info = reader("result.json")
+    info1 = reader("last_results.json")
     try:
-        info = reader("result.json")
-        info1 = reader("last_results.json")
-        print(info1)
-        if info[-1]["#"] == info1[-1]["#"]:
-            with open("out_checker.txt", "w", encoding="utf-8") as file:
-                file.write("False")
+
+        if info[-1]["#"] == info1[0]["#"]:
+            return False
         else:
-            print(add_in_json("last_results.json", [info[-1]]))
-            info.pop(-1)
-            print(add_in_json("result.json", info))
-            with open("out_checker.txt", "w", encoding="utf-8") as file:
-                file.write("False")
+            add_in_json("last_results.json", [info[-1]])
+            add_in_json("result.json", info)
+            return True
     except Exception as e:
         logging.warning(str(e) + " -- warning in file helper_checker was returned exception --")
+        add_in_json("last_results.json", [info[-1]])
+        add_in_json("result.json", info)
+        return True
 
 

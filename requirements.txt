@@ -1,0 +1,4 @@
+schedule~=1.1.0
+aioschedule~=0.5.2
+TgCrypto~=1.2.3
+Pyrogram~=2.0.35

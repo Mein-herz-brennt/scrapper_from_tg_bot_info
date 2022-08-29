@@ -5,9 +5,10 @@ import asyncio
 import tgcrypto
 from config import *
 from helper_checker import *
-from scrapper import reader, check_json, add_in_json
+from scrapper import reader
 
-app = Client("Nastya", api_id=api_id_5, api_hash=api_hash_5)
+
+app = Client("Lisa", api_id=api_id_6, api_hash=api_hash_6)
 
 deal_link = []
 counter = True

@@ -1,5 +1,6 @@
 import json
 import logging
+# from main_checker import *
 
 
 def not_in(information: str) -> bool:
@@ -37,13 +38,16 @@ def scrap(txt: str, min: int, percent: float, max: int) -> bool:
             percents = float(info_about_price[i][2].split("%")[0])
             price = float("".join(info_about_price[i][1].split("'")).split(" ")[1])
             if percents <= percent and float(min) <= price <= float(max):
+                # deal = "/deal" + info_about_price[i][0]
                 all_in_one.append({"#": "#" + info_about_price[i][0],
                                    "min": "".join(info_about_price[i][1].split("'")),
                                    "percent": percents,
                                    "max": "".join(info_about_price[i][3].split("'")),
                                    "bank": info_about_price[i][4],
                                    "user": info_about_user[i][0],
-                                   "link": "/deal" + info_about_price[i][0]})
+                                   "link": "/deal" + info_about_price[i][0],
+                                   "deal_in_work": False})
+                # main_0(deal)
         add_in_json("result.json", list(all_in_one))
         return True
     except Exception as e:
@@ -51,14 +55,15 @@ def scrap(txt: str, min: int, percent: float, max: int) -> bool:
         return False
 
 
-def check_json() -> bool:
+def check_json(link: str) -> bool:
     try:
-        get_info = reader("head_db.json")
-        if get_info[-1]["payed"]:
-            return True
-        else:
-            return False
+        get_info = reader("last_results.json")
+        for i in get_info:
+            if i["link"] == link:
+                if i["payed"]:
+                    return True
+                else:
+                    return False
     except Exception as e:
         logging.warning(str(e) + "-- warning in check_json --")
         return False
-

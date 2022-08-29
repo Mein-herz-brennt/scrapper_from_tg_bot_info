@@ -16,20 +16,14 @@ TOKEN = "1510499721:AAE2yMV1IjH2pYZrltd-z0oXskc-80mf3UA"
 # print(req.content)
 
 app = Client("my_second", api_id="18697047", api_hash="ac87134aea991710119ca75ca72f56b0")
-app0 = Client("me", api_id="14437576", api_hash="407794b728e894057cb4ef7545a03942")
+# app0 = Client("me", api_id="14437576", api_hash="407794b728e894057cb4ef7545a03942")
 
 
-async def send_update(app: Client):
-    await app.start()
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
-    chat_id = chat_id.id
-    await app.send_message(chat_id, "/start")
-    await app.stop()
+# async def send_update(app: Client):
+#     await app.start()
+#     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
+#     chat_id = chat_id.id
+#     await app.send_message(chat_id, "/start")
+#     await app.stop()
 
 
-@app0.on_message(filters.me)
-async def msg(_, message: types.Message):
-    await send_update(app)
-
-if __name__ == '__main__':
-    app0.run()

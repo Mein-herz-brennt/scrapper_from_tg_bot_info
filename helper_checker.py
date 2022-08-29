@@ -1,5 +1,20 @@
-from scrapper import *
+# from scrapper import *
 import logging
+import json
+
+
+def reader(filename: str) -> list:
+    """read and return list from json file"""
+    with open(filename, "r", encoding="utf-8") as file:
+        lst = json.load(file)
+    return lst
+
+
+def add_in_json(filename: str, data: list) -> bool:
+    """add list of data in json file"""
+    with open(filename, "w", encoding="utf-8") as file:
+        json.dump(data, file, indent=3)
+    return True
 
 
 def checker() -> bool:
@@ -7,17 +22,18 @@ def checker() -> bool:
     info = reader("result.json")
     info1 = reader("last_results.json")
     try:
-
-        if info[-1]["#"] == info1[0]["#"]:
-            return False
+        if info1:
+            if info[0]["#"] == info1[0]["#"]:
+                return False
+            else:
+                add_in_json("last_results.json", [info[-1]])
+                add_in_json("result.json", info)
+                return True
         else:
-            add_in_json("last_results.json", [info[-1]])
-            add_in_json("result.json", info)
-            return True
+            return False
+
     except Exception as e:
         logging.warning(str(e) + " -- warning in file helper_checker was returned exception --")
         add_in_json("last_results.json", [info[-1]])
         add_in_json("result.json", info)
         return True
-
-

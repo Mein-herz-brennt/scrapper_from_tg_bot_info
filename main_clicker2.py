@@ -7,7 +7,7 @@ import json
 from config import *
 from scrapper import *
 from helper_checker import checker
-import requests
+import aiohttp
 
 app = Client("Olga", api_hash=api_hash_4, api_id=api_id_4)
 
@@ -22,7 +22,6 @@ deal_links = []
 async def scrap_command(_, message: types.Message):
     chat_id2 = message.chat.id
     await app.send_message(chat_id2, "started")
-    sleep(0.3)
     chat_id1 = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id1 = chat_id1.id
     await app.send_message(chat_id1, "🔎 Orderbook")
@@ -36,10 +35,9 @@ counter = 0
 @app.on_message(filters.bot)
 async def on_first_order_book_message(_, message: types.Message):
     global deal_link, counter, chat_id2, deal_links, deal_link5
-    user_ids = [5509075943, 5567539582, 5565706619, 5317258228, 5490278675]
+    # user_ids = [5567539582, 5509075943, 5565706619, 5317258228, 5490278675]
     with open("checker_db.json", "r", encoding="utf-8") as file:
         info = json.load(file)
-    # check_json()
     text = str(message.text)
     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id = chat_id.id
@@ -55,24 +53,23 @@ async def on_first_order_book_message(_, message: types.Message):
             deal = reader("result.json")
             if deal:
                 deal_link = deal[-1]["link"]
-                if deal_link not in info:
-                    msg = f"""Номер ордера: {deal[-1]["#"]}\n
-                                                      НА сколько код: {deal[-1]["min"]}\n
-                                                      Наценка: {deal[-1]["percent"]}%\n
-                                                      Пользователь: {deal[-1]["user"]}\n
-                                                      Банк: {deal[-1]["bank"]}\n
-                                                      Link: {deal[-1]["link"]}\n
-                                                      К оплате: {deal[-1]["max"]}"""
-                    data1 = {"chat_id": -1001793309978, "text": msg}
-                    requests.post(f"https://api.telegram.org/bot{token}/sendMessage", data=data1)
+                if deal_link:
                     try:
-                        for i in user_ids:
-                            data = {"chat_id": i, "text": f".deal  {deal_link}"}
+                        async with aiohttp.ClientSession() as session:
+                            msg = f"Номер ордера: {deal[-1]['#']}\n" \
+                                  f"НА сколько код: {deal[-1]['min']}\n" \
+                                  f"Наценка: {deal[-1]['percent']}%\n" \
+                                  f"Пользователь: {deal[-1]['user']}\n" \
+                                  f"Банк: {deal[-1]['bank']}\n" \
+                                  f"Link: {deal[-1]['link']}\n" \
+                                  f"К оплате: {deal[-1]['max']}"
+                            data1 = {"chat_id": -1001793309978, "text": msg}
+                            await session.post(f"https://api.telegram.org/bot{token}/sendMessage", data=data1)
+                            data = {"chat_id": -799790633, "text": f".deal  {deal_link}"}
                             url = f"https://api.telegram.org/bot{token}/sendMessage"
-                            requests.post(url, data=data)
-                        # monocat
-                        with open("out_json.txt", "a", encoding="utf-8") as file:
-                            file.write(deal_link)
+                            await session.post(url, data=data)
+                            # with open("out_json.txt", "a", encoding="utf-8") as file:
+                            #     file.write(deal_link)
                     except Exception:
                         await app.send_message(chat_id, "🔎 Orderbook")
                     finally:
@@ -82,7 +79,6 @@ async def on_first_order_book_message(_, message: types.Message):
                     add_in_json("result.json", [])
                     await app.send_message(chat_id, "🔎 Orderbook")
             sleep(1.5)
-
             await app.send_message(chat_id, "🔎 Orderbook")
     else:
         await app.send_message(chat_id, "🔎 Orderbook")
@@ -101,7 +97,7 @@ async def edited(_, message: types.Message):
     sleep(1.5)
 
 
-@app.on_message(filters.command("stop", prefixes="."))
+@app.on_message(filters.command("stop", prefixes="/"))
 async def stop(_, message: types.Message):
     await message.reply("Я Остановился!")
     sleep(10)

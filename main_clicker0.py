@@ -36,7 +36,7 @@ counter = 0
 @app.on_message(filters.bot)
 async def on_first_order_book_message(_, message: types.Message):
     global deal_link, counter, chat_id2, deal_links, deal_link5
-    user_ids = [5567539582, 5509075943, 5565706619, 5317258228, 5490278675]
+    # user_ids = [5567539582, 5509075943, 5565706619, 5317258228, 5490278675]
     with open("checker_db.json", "r", encoding="utf-8") as file:
         info = json.load(file)
     text = str(message.text)
@@ -66,10 +66,9 @@ async def on_first_order_book_message(_, message: types.Message):
                                   f"К оплате: {deal[-1]['max']}"
                             data1 = {"chat_id": -1001793309978, "text": msg}
                             await session.post(f"https://api.telegram.org/bot{token}/sendMessage", data=data1)
-                            for i in user_ids:
-                                data = {"chat_id": i, "text": f".deal  {deal_link}"}
-                                url = f"https://api.telegram.org/bot{token}/sendMessage"
-                                await session.post(url, data=data)
+                            data = {"chat_id": -799790633, "text": f".deal  {deal_link}"}
+                            url = f"https://api.telegram.org/bot{token}/sendMessage"
+                            await session.post(url, data=data)
                             # with open("out_json.txt", "a", encoding="utf-8") as file:
                             #     file.write(deal_link)
                     except Exception:

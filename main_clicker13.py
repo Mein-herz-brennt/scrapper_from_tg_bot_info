@@ -22,7 +22,6 @@ deal_links = []
 async def scrap_command(_, message: types.Message):
     chat_id2 = message.chat.id
     await app.send_message(chat_id2, "started")
-    sleep(150.45)
     chat_id1 = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id1 = chat_id1.id
     await app.send_message(chat_id1, "🔎 Orderbook")
@@ -36,10 +35,9 @@ counter = 0
 @app.on_message(filters.bot)
 async def on_first_order_book_message(_, message: types.Message):
     global deal_link, counter, chat_id2, deal_links, deal_link5
-    user_ids = [5509075943, 5567539582, 5565706619, 5317258228, 5490278675]
+    # user_ids = [5567539582, 5509075943, 5565706619, 5317258228, 5490278675]
     with open("checker_db.json", "r", encoding="utf-8") as file:
         info = json.load(file)
-    # check_json()
     text = str(message.text)
     chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id = chat_id.id
@@ -53,8 +51,6 @@ async def on_first_order_book_message(_, message: types.Message):
             await app.send_message(chat_id, "🔎 Orderbook")
         else:
             deal = reader("result.json")
-            # with open("out_json.txt", "r", encoding="utf-8") as f:
-            #     info = f.read()
             if deal:
                 deal_link = deal[-1]["link"]
                 if deal_link:
@@ -69,10 +65,9 @@ async def on_first_order_book_message(_, message: types.Message):
                                   f"К оплате: {deal[-1]['max']}"
                             data1 = {"chat_id": -1001793309978, "text": msg}
                             await session.post(f"https://api.telegram.org/bot{token}/sendMessage", data=data1)
-                            for i in user_ids:
-                                data = {"chat_id": i, "text": f".deal  {deal_link}"}
-                                url = f"https://api.telegram.org/bot{token}/sendMessage"
-                                await session.post(url, data=data)
+                            data = {"chat_id": -799790633, "text": f".deal  {deal_link}"}
+                            url = f"https://api.telegram.org/bot{token}/sendMessage"
+                            await session.post(url, data=data)
                             # with open("out_json.txt", "a", encoding="utf-8") as file:
                             #     file.write(deal_link)
                     except Exception:
@@ -84,7 +79,6 @@ async def on_first_order_book_message(_, message: types.Message):
                     add_in_json("result.json", [])
                     await app.send_message(chat_id, "🔎 Orderbook")
             sleep(1.5)
-
             await app.send_message(chat_id, "🔎 Orderbook")
     else:
         await app.send_message(chat_id, "🔎 Orderbook")
@@ -103,7 +97,7 @@ async def edited(_, message: types.Message):
     sleep(1.5)
 
 
-@app.on_message(filters.command("stop", prefixes="."))
+@app.on_message(filters.command("stop", prefixes="/"))
 async def stop(_, message: types.Message):
     await message.reply("Я Остановился!")
     sleep(10)
@@ -112,25 +106,6 @@ async def stop(_, message: types.Message):
 @app.on_message(filters.command("hi", prefixes="."))
 async def hi(_, msg: types.Message):
     await msg.reply("hello")
-
-# chat = []
-#
-#
-# @app.on_message(filters.command("hi", prefixes="."))
-# async def get_chats_id(_, msg: types.Message):
-#     global chat
-#     chat.append(msg.from_user.id)
-#     print(chat)
-#
-#
-# @app.on_message(filters.command("h", prefixes="."))
-# async def message_to_all(_, msg):
-#     global chat
-#     for i in chat:
-#         # try:
-#         await app.send_message(i, f"hi")
-#         # except Exception as e:
-#         #     print(e, 1)
 
 
 if __name__ == '__main__':

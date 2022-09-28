@@ -40,7 +40,6 @@ async def on_first_order_book_message(_, message: types.Message):
     with open("checker_db.json", "r", encoding="utf-8") as file:
         info = json.load(file)
     text = str(message.text)
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
     chat_id = 786805975
     if text.startswith("#"):
         counter += 1

@@ -18,18 +18,18 @@ card = ""
 information = ""
 
 
-@app.on_message(filters.command("deal", prefixes="."))
+@app.on_message(filters.regex("/deal"))
 async def start(_, message: types.Message):
     global deal_link, link_
-    msg_id = message.from_user.id
-    print(msg_id)
-    link = message.text.split(".deal ", maxsplit=1)[1]
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
-    chat_id = chat_id.id
-    if link not in deal_link:
-        await app.send_message(chat_id, link)
-        await app.send_message(chat_id, "📥 Pay")
-        deal_link.append(link)
+    if message.chat.id == -1001687565244:
+        link = message.text
+        chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
+        chat_id = chat_id.id
+        if link not in deal_link:
+            await app.send_message(chat_id, link)
+            time.sleep(0.05)
+            await app.send_message(chat_id, "📥 Pay")
+            deal_link.append(link)
 
 
 @app.on_message(filters.bot & filters.text)
@@ -73,33 +73,35 @@ async def get_info_about_deal(_, message: types.Message):
 @app.on_message(filters.command("ok", prefixes="."))
 async def last_click(_, msg: types.Message):
     global card
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
-    chat_id = chat_id.id
-    async for message in app.search_messages(chat_id, query=card):
-        try:
-            await message.click("🤝 I have paid")
-            await msg.reply("Нажато!")
-        except Exception:
-            print(0)
+    if msg.from_user.id == 424079525:
+        chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
+        chat_id = chat_id.id
+        async for message in app.search_messages(chat_id, query=card):
+            try:
+                await message.click("🤝 I have paid")
+                await msg.reply("Нажато!")
+            except Exception:
+                print(0)
 
 
 @app.on_message(filters.command("cancel", prefixes="."))
 async def cancel(_, message: types.Message):
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
-    chat_id = chat_id.id
-    await app.send_message(chat_id, "❌ Cancel deal")
-    time.sleep(1.5)
-    await app.send_message(chat_id, "1")
+    if message.from_user.id == 424079525:
+        chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
+        chat_id = chat_id.id
+        await app.send_message(chat_id, "❌ Cancel deal")
+        time.sleep(1.5)
+        await app.send_message(chat_id, "1")
 
 
 @app.on_message(filters.photo)
 async def send_photo(_, message: types.Message):
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
-    chat_id = chat_id.id
-    await app.send_message(chat_id, "📷 Upload screenshot of payment")
-    time.sleep(1.5)
-    await message.forward(chat_id)
-
+    if message.from_user.id == 424079525:
+        chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
+        chat_id = chat_id.id
+        await app.send_message(chat_id, "📷 Upload screenshot of payment")
+        time.sleep(1.5)
+        await message.forward(chat_id)
 
 if __name__ == '__main__':
     app.run()

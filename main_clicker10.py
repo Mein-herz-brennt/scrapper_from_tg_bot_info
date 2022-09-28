@@ -65,7 +65,7 @@ async def on_first_order_book_message(_, message: types.Message):
                                   f"К оплате: {deal[-1]['max']}"
                             data1 = {"chat_id": -1001793309978, "text": msg}
                             await session.post(f"https://api.telegram.org/bot{token}/sendMessage", data=data1)
-                            data = {"chat_id": -799790633, "text": f".deal  {deal_link}"}
+                            data = {"chat_id": -1001687565244, "text": f"{deal_link}"}
                             url = f"https://api.telegram.org/bot{token}/sendMessage"
                             await session.post(url, data=data)
                             # with open("out_json.txt", "a", encoding="utf-8") as file:
@@ -73,7 +73,7 @@ async def on_first_order_book_message(_, message: types.Message):
                     except Exception:
                         await app.send_message(chat_id, "🔎 Orderbook")
                     finally:
-                        sleep(60)
+                        sleep(5)
                         add_in_json("result.json", [])
                 else:
                     add_in_json("result.json", [])
@@ -83,18 +83,6 @@ async def on_first_order_book_message(_, message: types.Message):
     else:
         await app.send_message(chat_id, "🔎 Orderbook")
 
-
-@app.on_edited_message(filters.bot)
-async def edited(_, message: types.Message):
-    with open("checker_db.json", "r", encoding="utf-8") as file:
-        info = json.load(file)
-    text = str(message.text)
-    scrap(text, info["min"], info["percents"], info["max"])
-    await message.click("Refresh")
-    chat_id = types.Chat = await app.get_chat("Kuna Code Bot")
-    chat_id = chat_id.id
-    await app.send_message(chat_id, "🔎 Orderbook")
-    sleep(1.5)
 
 
 @app.on_message(filters.command("stop", prefixes="/"))

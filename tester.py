@@ -1,8 +1,15 @@
-import requests
+from aiogram import Bot, executor, types, Dispatcher
+import re
+
+bot = Bot(token="5474405893:AAEyFrMrs0DNRaXZQqYZAfdaKmKzVRnXGnY", parse_mode="HTML")
+dp = Dispatcher(bot=bot)
 
 
-token = "5669125136:AAFztoGGP94HY7aPXqqxMtZWYCO6S5MaK54"
-chat_id = -799790633
-data1 = {"chat_id": -799790633, "text": "jfsdfsdf"}
-requests.post(f"https://api.telegram.org/bot{token}/sendMessage", data=data1)
+@dp.message_handler(commands="deal")
+async def deal(message: types.Message):
+    print(message.text)
 
+
+if __name__ == '__main__':
+    print(re.findall("/deal", "jdsadnasd/deal"))
+    executor.start_polling(dp, skip_updates=True)

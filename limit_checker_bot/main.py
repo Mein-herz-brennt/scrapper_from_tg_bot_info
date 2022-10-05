@@ -1,3 +1,4 @@
+import time
 from aiogram import Dispatcher, Bot, executor, types
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
@@ -22,17 +23,19 @@ async def start(message: types.Message, state: FSMContext):
 async def add_file(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer("Надішліть будь ласка файл в форматі xlsx", reply_markup=back_keyboard)
-    await CardLimitChecker.file_with_cards.set()
+    # await CardLimitChecker.file_with_cards.set()
 
 
-@dp.message_handler(state=CardLimitChecker.file_with_cards)
+@dp.message_handler(content_types="document")
 async def read_and_send_info_about_file(message: types.Message, state: FSMContext):
     await state.finish()
     filename = message.document.file_name
+    val = message.values
     if filename.endswith(".xlsx"):
-        await message.document.download()
-        data = parse(filename)
+        file_name = await message.document.download()
+        print(file_name.name)
         await message.answer("Файл завантажено, перевірте коректність)")
+        data = parse(file_name.name)
         for i in data:
             for key, item in i.items():
                 if type(item) == list:
@@ -42,9 +45,7 @@ async def read_and_send_info_about_file(message: types.Message, state: FSMContex
                                          f"{cards}")
         await message.answer("Все вірно?", reply_markup=is_correct_keyboard)
     else:
-        await message.answer("Надішліть будь ласка файл у вірнопу форматі, вірний формат - xlsx", reply_markup=back_keyboard)
-        await CardLimitChecker.file_with_cards.set()
-    os.remove(message.document.file_name)
+        await message.answer("Надішліть будь ласка файл у вірному форматі, вірний формат - xlsx", reply_markup=back_keyboard)
 
 
 @dp.message_handler(text="Назад", state="*")

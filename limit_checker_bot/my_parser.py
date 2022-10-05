@@ -1,6 +1,6 @@
 import openpyxl
 import json
-
+import os
 
 def parse(filename: str) -> list:
     """function for parse data from xlsx to json file"""
@@ -9,7 +9,7 @@ def parse(filename: str) -> list:
     for row in book.values:
         lst.append(list(row))
     last_lst = []
-    for name in range(len(lst[0]) - 1):
+    for name in range(len(lst[0])):
         dct = {}
         if lst[0][name] is not None:
             dct[lst[0][name]] = []

@@ -45,7 +45,10 @@ async def on_first_order_book_message(_, message: types.Message):
         counter += 1
         print(counter)
         scrap(text, info["min"], info["percents"], info["max"])
-        if counter == 100:
+        if counter % 11 == 0:
+            sleep(60)
+            await app.send_message(chat_id, "🔎 Orderbook")
+        elif counter == 100:
             counter = 0
             sleep(150)
             await app.send_message(chat_id, "🔎 Orderbook")
@@ -82,7 +85,6 @@ async def on_first_order_book_message(_, message: types.Message):
             await app.send_message(chat_id, "🔎 Orderbook")
     else:
         await app.send_message(chat_id, "🔎 Orderbook")
-
 
 @app.on_message(filters.command("stop", prefixes="/"))
 async def stop(_, message: types.Message):
